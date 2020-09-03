@@ -12,10 +12,11 @@ import csv
 class NaverCrawlerPipeline:
     def __init__(self):
         self.csvwriter = csv.writer(open('news_crawl_result.csv','w', encoding='utf-8'))
-        self.csvwriter.writerow(['media','date','body'])
+        self.csvwriter.writerow(['title', 'media','date','body'])
 
     def process_item(self, item, spider):
         row=[]
+        row.append(item['title'])
         row.append(item['media'])
         row.append(item['date'])
         row.append(item['body'])

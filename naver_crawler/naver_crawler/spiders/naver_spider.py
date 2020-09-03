@@ -11,7 +11,7 @@ class NaverSpider(scrapy.Spider):
     def start_requests(self):
         # 네이버 뉴스에서 '금리'라는 키워드 검색결과 페이지 리턴하기
         # 2005.1 ~ 2017.12 기간동안 
-        start_date = datetime.strptime("2005-01-01", "%Y-%m-%d") #시작 날짜
+        start_date = datetime.strptime("2017-12-31", "%Y-%m-%d") #시작 날짜  2005-01-01
         end_date = datetime.strptime("2017-12-31", "%Y-%m-%d") #끝 날짜  2017-12-31
         date_list = [start_date + timedelta(days=x) for x in range(0, (end_date-start_date).days+1)]
         # 쿠키의 news_office_checked에 해당하는 연합뉴스, 연합인포맥스, 이데일리 
@@ -64,16 +64,19 @@ class NaverSpider(scrapy.Spider):
             
             url = desc.xpath('.//a/@href').get() # 네이버 뉴스 링크를 제공하는 경우,
             if url == '#':  # 제목 링크 가져오기
-                url = section.xpath('dl/dt/a/@href').getall()[0]   
+                url = section.xpath('.//dl/dt/a/@href').getall()[0]   
 
+            title = section.xpath('.//dl/dt/a/text()').getall()
+            print(title)
             #print(section, media, date,response.meta['start_num'], url)
             yield scrapy.Request(url=url,
-                                meta={'media':media,'date':date},
+                                meta={'title':title, 'media':media,'date':date},
                                 callback=self.parse, )
 
 
     def parse(self, response):
         item = NaverCrawlerItem()
+        item['title'] = response.meta['title']
         media = response.meta['media']
         item['media'] = media
         item['date'] = response.meta['date']
