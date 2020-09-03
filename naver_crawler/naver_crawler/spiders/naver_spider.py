@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 
 class NaverSpider(scrapy.Spider):
-    name = "naver"
+    name = "naver_news"
 
     def start_requests(self):
         # 네이버 뉴스에서 '금리'라는 키워드 검색결과 페이지 리턴하기
